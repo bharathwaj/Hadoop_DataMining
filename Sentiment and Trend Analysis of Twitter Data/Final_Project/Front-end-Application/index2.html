@@ -1,0 +1,137 @@
+<!DOCTYPE>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="css/style.css" />
+<script src="js/d3.v3.min.js"></script>
+<script src="js/jquery-1.11.3.min.js"></script>
+</head>  
+<body>
+<div class="top-bar"> 
+<img class="img2" src="images/twutte.png" />
+<img class="img1" src="images/BPL.png" />
+<div class="clr"></div>
+</div>  
+<header>
+	<div id="logo-container"> 
+		<div id="logo">EPL Sentiment Analysis from Tweets</div>
+		<div id="subtitle">Anirudh Annamaneni</div> 
+		<div id="subtitle">Bharathwaj Radhakrishnan</div>
+		<div id="subtitle">Shyam Sunder Karuna</div>
+	</div>
+</header>  
+<div class="container">
+<span id="subtitle"><a style="color: #e85151;" href="index.html">Home</a><br/></span>
+<div>Overall Ratings of different teams in EPL 2015</div><br/><br/>
+</div>
+</body>
+<script>
+$( document ).ready(function() { 
+$('select[name="teams-dropdown"]').change(function(){  
+  // Reset the chart
+  $(".pie-chart").empty();
+  var getTeam = $(this).val();
+        getTeamChart($(this).val());
+});
+
+$('button[id="reset"]').click(function(){  
+  // Reset the chart
+  $(".pie-chart").empty(); 
+});
+
+$('button[id="reset-bar"]').click(function(){  
+  // Reset the chart
+ $(".bar-chart").empty();
+});
+
+$('button[id="reset-bar-rating"]').click(function(){  
+  // Reset the chart
+ $(".bar-chart-rating").empty();
+});
+
+$('button[id="update"]').click(function(){  
+  // Reset the chart
+  $(".bar-chart").empty();
+  generareBarchartPopularity();
+});
+
+$('button[id="update-rating"]').click(function(){  
+  // Reset the chart
+  $(".bar-chart-rating").empty();
+  generareBarchartRating();
+});
+
+});
+
+// Rating bar chart
+ 
+var margin = {top: 70, right: 10, bottom: 10, left: 180},
+    width = 760 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+var x = d3.scale.linear()
+    .range([0, width]);
+
+var y = d3.scale.ordinal()
+    .rangeRoundBands([0, height], .2);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("top");
+
+var svgRating = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+d3.tsv("output_NORM/data.tsv", type, function(error, data) { 
+  x.domain(d3.extent(data, function(d) { return d.Rating; })).nice();
+  y.domain(data.map(function(d) { return d.Team; })); 
+
+  svgRating.selectAll(".bar")
+      .data(data)
+      .enter().append("rect")
+      .attr("class", function(d) { return d.Rating < 0 ? "bar negative" : "bar positive"; })
+      .attr("x", function(d) { return x(Math.min(0, d.Rating)); })
+      .attr("y", function(d) { return y(d.Team); })
+      .attr("width", function(d) { return Math.abs(x(d.Rating) - x(0)); })
+      .attr("height", y.rangeBand());
+ 
+  svgRating.append("g")
+      .attr("class", "x axis") 
+      .call(xAxis);
+
+  svgRating.append("g") 
+      .attr("class", "y axis")
+      .append("line")
+      .attr("x1", x(0))
+      .attr("x2", x(0))
+      .attr("y2", height); 
+      
+ svgRating.selectAll("text")
+    .data(data)
+    .enter()
+    .append("text")
+     .text(function (d) {
+    return parseFloat(Math.round(data.Rating * 100) / 100).toFixed(1);
+})
+  .attr("x", function (d) {
+    return x(d.xaxis) + x.rangeBand() / 2;
+})
+    .attr("y", function (d) {
+    return height - y(d.Rating) + 14;
+})
+    .attr("text-anchor", "middle")
+    .attr("font-family", "sans-serif")
+    .attr("font-size", "11px")
+    .attr("fill", "black");
+
+});
+
+function type(d) {
+  d.Rating = +d.Rating;
+  return d;
+}
+</script>
+</html>

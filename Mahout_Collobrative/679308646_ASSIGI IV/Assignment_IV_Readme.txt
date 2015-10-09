@@ -1,0 +1,15 @@
+*************************************************************************
+ASSIGNMENT IV ITEM Based Collrabative reomendation using Mahout
+*************************************************************************
+File List:
+RecommenderTest
+
+
+Package:
+edu.uic.ids561.mahout.collfilter.item
+
+Input:
+Input.txt in Input folder
+
+
+

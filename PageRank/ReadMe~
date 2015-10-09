@@ -1,0 +1,31 @@
+*************************************************************************
+ASSIGNMENT VII Page Rank using Map_red 
+*************************************************************************
+File List:
+PageRankDriver.java
+PageRankMapper.java
+PageRankReducer.java
+
+Package:
+edu.uic.ids561.hadoop.pagerank.driver
+PageRankDriver.java
+
+edu.uic.ids561.hadoop.pagerank.mapper
+PageRankMapper.java
+
+edu.uic.ids561.hadoop.pagerank.driver.reducer
+PageRankReducer.java
+
+
+Input:
+Input.txt in Input folder
+
+
+Final Output:
+100 folders containing page rank with 
+
+I have executed the map reduce 100 times or 100 iterations.
+
+Hadoop:
+ bin/hadoop jar bin/PageRankAlgo.jar edu.uic.ids561.hadoop.pagerank.driver.PageRankDriver /user/hduser/PageRankAlgo/input /user/hduser/PageRankAlgo/output
+

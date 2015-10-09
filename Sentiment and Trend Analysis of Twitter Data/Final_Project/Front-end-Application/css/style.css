@@ -1,0 +1,86 @@
+body {
+    background-color: #22272A;
+    color: #FFFFFF;
+    font-size: 1em;
+    line-height: 1.5;
+	font-family: Arial;
+}
+.arc path {
+  stroke: #fff;
+} 
+.container{
+	width: 1050px;
+	height: auto;
+	margin-bottom: 50px;
+	margin: 0 auto;
+	position: relative;
+	top: 50px;
+	
+}
+img{
+	float: left;
+}
+.clr{
+	clear: both;
+}
+.img1{
+	width: 100px;
+	margin-left: 30px;
+}
+.img2{
+	width: 200px;
+	margin-left: 100px;
+}
+header {
+    max-width: 68em; 
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 4em;
+    border-top: 2px solid #E85151;
+}
+header #logo-container:last-child {
+    margin-right: 0px;
+}
+header #logo-container {
+    float: left;
+    display: block;
+    margin-right: 2.35765%;
+    width: 110.8212%;
+}
+header #logo-container #logo { 
+    padding-top: 0.5em;
+    font-weight: bold;
+    font-size: 48px;
+    line-height: 60px;
+    letter-spacing: -0.05em;
+    float: none;
+}
+header #logo-container #subtitle {
+    color: #E85151;
+    font-weight: bold;
+    font-size: 18px;
+}
+#subtitle, .subtitle {
+    color: #FFFFFF;
+    font-weight: bold;
+    font-size: 18px;
+}
+.top-bar{
+	width: 700px;
+	margin: 0 auto;
+}
+.bar.positive {
+  fill: steelblue;
+}
+
+.bar.negative {
+  fill: brown;
+}
+
+.chart rect {
+  stroke: white;
+  fill: steelblue;
+}
+.tick text {
+    stroke: white;
+}

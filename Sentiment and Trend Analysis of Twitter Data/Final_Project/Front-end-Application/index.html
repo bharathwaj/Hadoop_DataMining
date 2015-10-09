@@ -1,0 +1,199 @@
+<!DOCTYPE>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="css/style.css" />
+<script src="js/d3.v3.min.js"></script>
+<script src="js/jquery-1.11.3.min.js"></script>
+</head>  
+<body>
+<div class="top-bar"> 
+<img class="img2" src="images/twutte.png" />
+<img class="img1" src="images/BPL.png" />
+<div class="clr"></div>
+</div>  
+<header>
+	<div id="logo-container"> 
+		<div id="logo">EPL Sentiment Analysis from Tweets</div>
+		<div id="subtitle">Anirudh Annamaneni</div> 
+		<div id="subtitle">Bharathwaj Radhakrishnan</div>
+		<div id="subtitle">Shyam Sunder Karuna</div>
+	</div> 
+</header>  
+<div class="container">
+<span id="subtitle"><a style="color: #e85151;" href="index2.html">Click to view the overall ratings of different teams</a><br/></span>
+<span id="subtitle">Select the team</span>
+<div id="option"> 
+<select name="teams-dropdown" size=1>
+    <option value="None">Select Option</option> 
+    <option value="Chelsea">Chelsea</option>
+    <option value="ManchesterUnited">Manchester United</option>
+    <option value="ManchesterCity">Manchester City</option>
+    <option value="Arsenal">Arsenal</option>
+    <option value="Liverpool">Liverpool</option>
+    <option value="SouthHampton">South Hampton</option> 
+    <option value="Tottenham">Tottenham</option> 
+    <option value="Swansea">Swansea</option> 
+    <option value="StokeCity">Stoke City</option> 
+    <option value="WestHamUnited">West Ham United</option>
+</select>
+    <button id="reset" onclick="reset()">Reset</button>
+</div>
+<div>Tweet Sentiments of different teams in EPL 2015</div><br/><br/>
+</div>
+</body>
+<script>
+$( document ).ready(function() { 
+$('select[name="teams-dropdown"]').change(function(){  
+  // Reset the chart
+  $(".pie-chart").empty();
+  var getTeam = $(this).val();
+        getTeamChart($(this).val());
+});
+
+$('button[id="reset"]').click(function(){  
+  // Reset the chart
+  $(".pie-chart").empty(); 
+});
+
+$('button[id="reset-bar"]').click(function(){  
+  // Reset the chart
+ $(".bar-chart").empty();
+});
+
+$('button[id="update"]').click(function(){  
+  // Reset the chart 
+  $(".bar-chart").empty();
+  generareBarchartPopularity();
+
+});
+ 
+});
+
+// Variables declaration
+
+var width = 400,  
+    height = 250,
+    radius = Math.min(width, height) / 2;
+ 
+var color = d3.scale.ordinal()
+    .range(["#00B800", "#DB4D4D"]);
+
+var arc = d3.svg.arc() 
+    .outerRadius(radius - 10)
+    .innerRadius(0);
+    
+var pie = d3.layout.pie()
+    .sort(null)
+    .value(function(d) { return d.Count; }); 
+
+var svg = d3.select(".container").append("svg") 
+    .attr("width", width)
+    .attr("height", height)
+	.append("g").attr("class","pie-chart") 
+    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")"); 
+
+// Pie Charts 
+
+function getTeamChart(e){ 
+var Url = "output_SENTI/"+e+"/data.tsv";
+d3.tsv(Url, function(error, data) {
+  data.forEach(function(d) {
+    d.Count = +d.Count;
+  });
+  
+  var g2 = svg.selectAll(".arc") 
+      .data(pie(data))    
+      .enter().append("g")  
+      .attr("class", "arc");
+  
+  g2.append("path")
+      .attr("d", arc)
+      .style("fill", function(d) { return color(d.data.Sentiment); });
+	  
+  g2.append("text")
+      .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+      .attr("dy", ".35em")
+      .style("text-anchor", "middle")  
+      .text(function(d) { return d.data.Sentiment; }); 
+});  
+} 
+ 
+// Popularity bar chart
+
+var margin = {top: 20, right: 20, bottom: 70, left: 40},
+    width = 700 - margin.left - margin.right + 50;
+   
+var x = d3.scale.ordinal().rangeRoundBands([0, width], .15);
+var y = d3.scale.linear().range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x) 
+    .orient("bottom");
+ 
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .ticks(10);
+    
+var svg3 = d3.select(".container").append("div").attr("width","700px").attr("height","100px").attr("class","subtitle").html("<button id='update'>Generate/Update</button><button id='reset-bar'>Reset</button><br/>Popular Teams based on Tweets").style({"position":"relative","top":"-250px","margin-top":"300px"}) 
+    
+var svg3 = d3.select(".container").append("svg") 
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", "420px")
+    .style({"position":"relative", "top":"-200px", "color":"#FFFFFF"})
+    .append("g").attr("class","bar-chart") 
+    .attr("transform", 
+          "translate(" + margin.left + "," + margin.top + ")");
+
+function generareBarchartPopularity(){  
+d3.tsv("output_TREND/data.tsv", function(error, data) {
+    data.forEach(function(d) { 
+        d.Team = d.Team;
+        d.Count = +d.Count; 
+    }); 
+	
+  x.domain(data.map(function(d) { return d.Team; }));
+  y.domain([0, d3.max(data, function(d) { return d.Count; })]);
+ 
+  svg3.append("g") 
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .style("color", "#FFFFFF") 
+      .call(xAxis)  
+      .selectAll("text")
+      .style("text-anchor", "end")
+      .attr("dx", "-0.5em") 
+      .attr("dy", "-.55em") 
+      .attr("transform", "rotate(-90)" ); 
+
+  svg3.append("g") 
+      .attr("class", "y axis label-yaxis")
+      .call(yAxis)
+      .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em") 
+      .style("text-anchor", "end")  
+ 
+  svg3.selectAll("bar")
+      .data(data)
+      .enter().append("rect")  
+      .style("fill", "steelblue")
+      .attr("x", function(d) { return x(d.Team); })
+      .attr("width", x.rangeBand()) 
+      .attr("y", function(d) { return y(d.Count); })
+      .attr("height", function(d) { return height - y(d.Count); });
+
+  svg3.selectAll("text") 
+    .data(data) 
+    .enter()
+    .append("text")
+    .attr("text-anchor", "middle")
+    .attr("font-family", "sans-serif")
+    .attr("font-size", "11px")
+    .attr("fill", "white");
+}); 
+}
+</script>
+</html>
